@@ -1,0 +1,6 @@
+streamlit
+streamlit-mic-recorder
+tensorflow>=2.18.0
+librosa
+numpy>=2.1.0
+firebase-admin
