@@ -32,6 +32,7 @@ else:
     MODEL_PATH = "83_desktop.h5"
 
 
+
 # 2. Cached model loading optimization
 @st.cache_resource
 def load_acoustic_model():
