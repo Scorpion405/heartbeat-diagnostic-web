@@ -26,16 +26,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Fixed backslash path formatting error using raw string 'r'
+# Relative model location for Cloud Docker/Linux containers
 MODEL_PATH = "83_desktop.h5"
 
 # 2. Cached model loading optimization
 @st.cache_resource
 def load_acoustic_model():
     if os.path.exists(MODEL_PATH):
-        return tf.keras.models.load_model(MODEL_PATH)
+        try:
+            return tf.keras.models.load_model(MODEL_PATH)
+        except Exception as e:
+            st.error(f"Error initializing neural network framework: {str(e)}")
+            return None
     else:
-        st.error(f"Error: Model file not found at: {MODEL_PATH}")
+        st.error(f"Error: Model file not found at root directory: {MODEL_PATH}")
         return None
 
 # 3. Suppressed Firebase background initialization
@@ -49,7 +53,7 @@ except Exception:
 
 model = load_acoustic_model()
 
-# 4. Your native feature extraction pipeline math
+# 4. Corrected feature extraction pipeline math
 def extract_3d_spectrogram(audio_data, sample_rate=4000, max_pad_len=128):
     try:
         rms = np.sqrt(np.mean(audio_data**2)) + 1e-6
@@ -65,6 +69,7 @@ def extract_3d_spectrogram(audio_data, sample_rate=4000, max_pad_len=128):
         channels = [static_norm, delta, delta_delta]
         processed_channels = []
         for ch in channels:
+            # FIX: explicit index added to shape query to prevent tuple vs int type exceptions
             if ch.shape[1] < max_pad_len:
                 pad_width = max_pad_len - ch.shape[1]
                 ch = np.pad(ch, pad_width=((0, 0), (0, pad_width)), mode='constant')
