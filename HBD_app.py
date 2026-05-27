@@ -26,8 +26,11 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Fixed backslash path formatting error using raw string 'r'
-MODEL_PATH = "83_desktop.h5"
+if os.path.exists(r"D:\HBD_CUSTOM\Scripts\WEB\83_desktop.h5"):
+    MODEL_PATH = r"D:\HBD_CUSTOM\Scripts\WEB\83_desktop.h5"
+else:
+    MODEL_PATH = "83_desktop.h5"
+
 
 # 2. Cached model loading optimization
 @st.cache_resource
